@@ -6,10 +6,10 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import { OhVueIcon, addIcons } from "oh-vue-icons";
-import * as Icons from "oh-vue-icons/icons";
+import { OhVueIcon, addIcons } from 'oh-vue-icons'
+import * as Icons from 'oh-vue-icons/icons'
 
-addIcons(... Object.values({ ...Icons }))
+addIcons(...Object.values({ ...Icons }))
 
 const app = createApp(App)
 

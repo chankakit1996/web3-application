@@ -12,6 +12,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.3",
     "ethers": "^6.6.0",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^2.1.3",
