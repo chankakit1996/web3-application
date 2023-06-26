@@ -1,7 +1,6 @@
 import { ethers } from "hardhat";
 
 const main = async () => {
-  console.log('abc')
   const Transactions = await ethers.getContractFactory('Transactions');
   const transactions = await Transactions.deploy();
 
@@ -11,7 +10,6 @@ const main = async () => {
 };
 
 const runMain = async () => {
-  console.log('abc')
   try {
     await main();
     process.exit(0);
