@@ -7,12 +7,12 @@ import { config as dotEnvConfig } from "dotenv";
 dotEnvConfig();
 
 const config: HardhatUserConfig = {
-  defaultNetwork: 'sepolia',
+  defaultNetwork: process.env.BLOCKCHAIN_NETWORK,
   networks: {
     hardhat: {
     },
-    sepolia: {
-      url: "https://rpc.ankr.com/eth_sepolia",
+    [process.env.BLOCKCHAIN_NETWORK ?? '']: {
+      url: process.env.BLOCKCHAIN_NETWORK_URL,
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     }
   },
