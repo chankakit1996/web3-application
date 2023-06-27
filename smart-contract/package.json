@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "gen-typechain": "hardhat clean && hardhat typechain"
+    "gen-typechain": "hardhat clean && hardhat typechain",
+    "deploy": "hardhat run scripts/deploy.ts"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
