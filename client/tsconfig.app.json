@@ -1,6 +1,7 @@
+// For src
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "*/**/*.vue", "*/**/*.ts", "*/**/*.js", "./src/*.ext"],
+  "include": ["env.d.ts", "*/**/*.vue", "*/**/*.ts", "*/**/*.js", "./src/*.ext", "./src/utils/*.json"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
     "composite": true,
