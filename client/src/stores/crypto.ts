@@ -1,34 +1,37 @@
-import { ref, computed, type Ref, reactive } from 'vue'
+import { ref, computed, type Ref, reactive, toRef } from 'vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { ethers } from 'ethers'
+import { Contract, ethers } from 'ethers'
 import { contractABI, contractAddress } from '@/utils/constants'
+import { Transactions__factory, type Transactions, factories } from '@types-typechain'
+import type { TransactionsInterface } from '@types-typechain/Transactions'
 
 export const useCryptoStore = defineStore('crypto', () => {
   const { ethereum } = window
-  const accounts: Ref<string[]> = ref([])
+  const accounts: Ref<string> = ref('')
   const formData = reactive({
-    addressFrom: accounts.value[0],
+    addressFrom: accounts,
     addressTo: '',
-    amount: null,
+    amount: 0,
     message: '',
     keyword: ''
   })
+  const transactionCount = ref(localStorage.getItem('transactionCount'))
 
   const getEthereumContract = async () => {
-    // if (!ethereum) {
-    //   alert('Must connect to MetaMask')
-    //   return
-    // }
-    // const provider = new ethers.BrowserProvider(ethereum)
-    // const signer = await provider.getSigner()
-    // const transactionContract = new ethers.Contract(contractAddress, contractABI, signer)
-    // console.log(provider, signer, transactionContract)
+    if (!ethereum) {
+      alert('Must connect to MetaMask')
+      return
+    }
+
+    const contract = await Transactions__factory.connect(contractAddress)
+
+    return contract
   }
 
   const checkWalletIsConnected = async () => {
     if (ethereum) {
       const result = await ethereum.request({ method: 'eth_accounts' })
-      accounts.value = result
+      accounts.value = result[0]
 
       return true
     }
@@ -43,15 +46,62 @@ export const useCryptoStore = defineStore('crypto', () => {
     }
 
     const result = await ethereum.request({ method: 'eth_requestAccounts' })
-    accounts.value = result
+    accounts.value = result[0]
   }
 
   const sendTransactions = async () => {
-    console.log(formData)
+    if (!ethereum) return
+    try {
+      const { addressFrom, addressTo, amount, keyword, message } = formData
+      const contract = await getEthereumContract()
+      const parsedAmount = ethers.parseEther(`${amount}`)
+      console.log(parsedAmount)
+      // console.log(ethers.hexlify(amount))
+
+      await ethereum.request({
+        method: 'eth_sendTransaction',
+        // The following sends an EIP-1559 transaction. Legacy transactions are also supported.
+        params: [
+          {
+            from: addressFrom, // The user's active address.
+            to: addressTo, // Required except during contract publications.
+            value: ethers.parseEther(`${amount}`), // Only required to send ether to the recipient from the initiating external account.
+            gasLimit: '0x5028' // Customizable by the user during MetaMask confirmation.
+          }
+        ]
+      })
+      // await ethereum.request({
+      //   method: 'eth_sendTransaction',
+      //   params: [
+      //     {
+      //       from: addressFrom,
+      //       to: addressTo,
+      //       gasLimit: '0x5208', // 21000 GWEI
+      //       value: parsedAmount,
+      //       maxPriorityFeePerGas: '0x3b9aca00', // Customizable by the user during MetaMask confirmation.
+      //       maxFeePerGas: '0x2540be400', // Customizable by the user during MetaMask confirmation.
+      //     }
+      //   ]
+      // })
+
+      // const transactionHash = await contract?.addToBlockchain(
+      //   addressTo,
+      //   parsedAmount,
+      //   message,
+      //   keyword
+      // )
+      // console.log(`transaction hash: ${transactionHash?.hash}`)
+      // await transactionHash?.wait()
+
+      // const count = await contract?.getTransactionCount()
+      // transactionCount.value = count?.toString() ?? ''
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return {
-    getEthereumContract,
+    // getEthereumContract,
     checkWalletIsConnected,
     connectWallet,
     accounts,

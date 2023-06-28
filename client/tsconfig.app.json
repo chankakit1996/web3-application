@@ -9,6 +9,6 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "typeRoots": ["./@types"]
+    "typeRoots": ["./@types", "./@types-typechain"]
   }
 }
