@@ -54,9 +54,6 @@ export const useCryptoStore = defineStore('crypto', () => {
     try {
       const { addressFrom, addressTo, amount, keyword, message } = formData
       const contract = await getEthereumContract()
-      const parsedAmount = ethers.parseEther(`${amount}`)
-      console.log(parsedAmount)
-      // console.log(ethers.hexlify(amount))
 
       await ethereum.request({
         method: 'eth_sendTransaction',
@@ -65,24 +62,11 @@ export const useCryptoStore = defineStore('crypto', () => {
           {
             from: addressFrom, // The user's active address.
             to: addressTo, // Required except during contract publications.
-            value: ethers.parseEther(`${amount}`), // Only required to send ether to the recipient from the initiating external account.
+            value: ethers.parseEther(`${0.001}`).toString(16), // Only required to send ether to the recipient from the initiating external account.
             gasLimit: '0x5028' // Customizable by the user during MetaMask confirmation.
           }
         ]
       })
-      // await ethereum.request({
-      //   method: 'eth_sendTransaction',
-      //   params: [
-      //     {
-      //       from: addressFrom,
-      //       to: addressTo,
-      //       gasLimit: '0x5208', // 21000 GWEI
-      //       value: parsedAmount,
-      //       maxPriorityFeePerGas: '0x3b9aca00', // Customizable by the user during MetaMask confirmation.
-      //       maxFeePerGas: '0x2540be400', // Customizable by the user during MetaMask confirmation.
-      //     }
-      //   ]
-      // })
 
       // const transactionHash = await contract?.addToBlockchain(
       //   addressTo,
